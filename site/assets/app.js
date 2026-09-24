@@ -6,12 +6,18 @@
   document.querySelectorAll("[data-link]").forEach(a => {
     const url = C[a.dataset.link];
     if (url) a.href = url;
+    else if (C.anonymous) a.hidden = true; // reviewers never see placeholders
     else { a.removeAttribute("href"); a.classList.add("todo"); a.title = "TODO: set " + a.dataset.link + " in assets/config.js"; }
   });
   const foot = document.getElementById("foot");
-  if (foot) foot.innerHTML = `
-    <div>${C.title} v${C.benchmarkVersion}. Built by the ${C.labUrl ? `<a href="${C.labUrl}">${C.lab}</a>` : C.lab}.</div>
-    <div>Results live in <a href="${C.githubRepo}/blob/main/leaderboard.csv">leaderboard.csv</a> on GitHub${C.contact ? ` · <a href="mailto:${C.contact}">${C.contact}</a>` : ""}.</div>`;
+  if (foot) {
+    const by = C.labUrl ? `<a href="${C.labUrl}">${C.lab}</a>` : C.lab;
+    const src = C.csvSourceUrl || (C.githubRepo && C.githubRepo + "/blob/main/leaderboard.csv");
+    const csv = src ? `Results live in <a href="${src}">leaderboard.csv</a>${C.anonymous ? "" : " on GitHub"}` : "";
+    foot.innerHTML = `
+    <div>${C.title} v${C.benchmarkVersion}. ${C.anonymous ? by : `Built by the ${by}`}.</div>
+    <div>${csv}${C.contact ? `${csv ? " · " : ""}<a href="mailto:${C.contact}">${C.contact}</a>` : ""}${csv || C.contact ? "." : ""}</div>`;
+  }
 
   /* ---------- CSV parsing (handles quoted fields) ---------- */
   function parseCSV(text) {

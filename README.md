@@ -32,6 +32,22 @@ See `site/submit.html` for the contributor instructions.
 | verified | `yes` once maintainers reproduce the result |
 | benchmark_version | `1.0` |
 
+## Anonymous reviewer copy
+
+`scripts/build.py` also builds `_anon/`: the same site with the lab name,
+GitHub, dataset, paper and contact links removed, the Submit page and BibTeX
+replaced by a note, identifying CSV fields blanked, and search engines blocked.
+It is deployed to Cloudflare Pages at `https://<CF_PROJECT>.pages.dev`, whose
+URL does not reveal the account owner.
+
+The build **fails** if any term in `LEAK_TERMS` (in `scripts/build.py`) appears
+anywhere in `_anon/`. Add all author surnames there before submitting.
+Set anonymous links in `site/assets/config.anon.js`.
+
+Preview locally: `python scripts/build.py && cd _anon && python -m http.server`
+
+After decisions: delete the Cloudflare project and remove its secrets.
+
 ## One-time setup
 
 1. Settings → Pages → Source: **GitHub Actions**.
@@ -39,11 +55,13 @@ See `site/submit.html` for the contributor instructions.
    change `HF_SPACE` in `.github/workflows/deploy.yml`.
 3. Add a Hugging Face write token as the repo secret `HF_TOKEN`. Without it,
    only GitHub Pages deploys.
-4. Fill the placeholders in `site/assets/config.js` and search the site for
+4. For the anonymous copy, add repo secrets `CLOUDFLARE_API_TOKEN` (a token
+   with the "Cloudflare Pages: Edit" permission) and `CLOUDFLARE_ACCOUNT_ID`.
+5. Fill the placeholders in `site/assets/config.js` and search the site for
    `TODO`.
 
 ## Local preview
 
 ```
-cp leaderboard.csv site/ && cd site && python -m http.server
+python scripts/build.py && cd _site && python -m http.server
 ```
