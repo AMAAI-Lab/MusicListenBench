@@ -1,0 +1,52 @@
+# On every push to main: validate, then publish the same site + CSV
+# to GitHub Pages and to the Hugging Face Space. One source, two front ends.
+name: Deploy leaderboard
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency: { group: deploy, cancel-in-progress: true }
+env:
+  HF_SPACE: amaai-lab/MusicListenBench-leaderboard   # TODO: confirm Space id
+  HF_TOKEN: ${{ secrets.HF_TOKEN }}                  # add in repo Settings > Secrets
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python scripts/validate.py leaderboard.csv
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r site/* _site/
+          cp leaderboard.csv _site/leaderboard.csv
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+      - name: Push to Hugging Face Space
+        if: ${{ env.HF_TOKEN != '' }}
+        run: |
+          cp space/README.md _site/README.md
+          pip install -q huggingface_hub
+          python -c "
+          import os
+          from huggingface_hub import HfApi
+          HfApi(token=os.environ['HF_TOKEN']).upload_folder(
+              folder_path='_site', repo_id=os.environ['HF_SPACE'], repo_type='space',
+              commit_message='Sync from GitHub')
+          "
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
