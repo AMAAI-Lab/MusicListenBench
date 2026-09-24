@@ -1,5 +1,7 @@
-# On every push to main: validate, then publish the same site + CSV
-# to GitHub Pages and to the Hugging Face Space. One source, two front ends.
+# On every push to main: validate the CSV, then build and publish
+#   _site/  -> GitHub Pages + Hugging Face Space (public)
+#   _anon/  -> Cloudflare Pages (anonymous reviewer copy)
+# Each target is skipped if its secret is missing.
 name: Deploy leaderboard
 on:
   push:
@@ -11,8 +13,11 @@ permissions:
   id-token: write
 concurrency: { group: deploy, cancel-in-progress: true }
 env:
-  HF_SPACE: amaai-lab/MusicListenBench-leaderboard   # TODO: confirm Space id
-  HF_TOKEN: ${{ secrets.HF_TOKEN }}                  # add in repo Settings > Secrets
+  HF_SPACE: amaai-lab/MusicListenBench-leaderboard   # keep your own value here
+  HF_TOKEN: ${{ secrets.HF_TOKEN }}
+  CF_PROJECT: musiclistenbench-review                # becomes musiclistenbench-review.pages.dev
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,14 +26,13 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: python scripts/validate.py leaderboard.csv
-      - name: Assemble site
-        run: |
-          mkdir -p _site
-          cp -r site/* _site/
-          cp leaderboard.csv _site/leaderboard.csv
+      - name: Build public and anonymous sites
+        run: python scripts/build.py   # fails if the anonymous build leaks an identifying term
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
+
       - name: Push to Hugging Face Space
         if: ${{ env.HF_TOKEN != '' }}
         run: |
@@ -41,6 +45,15 @@ jobs:
               folder_path='_site', repo_id=os.environ['HF_SPACE'], repo_type='space',
               commit_message='Sync from GitHub')
           "
+
+      - name: Create Cloudflare Pages project (first run only)
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        continue-on-error: true   # fails harmlessly once the project exists
+        run: npx --yes wrangler@3 pages project create "$CF_PROJECT" --production-branch=main
+      - name: Deploy anonymous copy to Cloudflare Pages
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        run: npx --yes wrangler@3 pages deploy _anon --project-name="$CF_PROJECT" --branch=main --commit-message="update"
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
