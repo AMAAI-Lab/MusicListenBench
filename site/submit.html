@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Submit a result to MusicListenBench</title>
+<meta name="description" content="How to add your model's results to the MusicListenBench leaderboard.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎧</text></svg>">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="index.html"><b>MusicListenBench</b><span>AMAAI Lab</span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html" >Leaderboard</a>
+    <a href="about.html" >About</a>
+    <a href="submit.html" aria-current="page">Submit</a>
+    <a data-link="datasetUrl" href="#">Dataset</a>
+    <a data-link="paperUrl" href="#">Paper</a>
+  </nav>
+</div></header>
+<main id="main" class="wrap">
+  <section class="block" style="border-top:0">
+    <h2>Submit a result</h2>
+    <p class="sub">The leaderboard is a single CSV file on GitHub. You add your result with a pull request; this page and the Hugging Face Space update when it merges.</p>
+    <ol class="steps">
+      <li><h3>Run the official evaluation</h3>
+        <p>Use the evaluation script from the <a data-link="githubRepo" href="#">GitHub repository</a> on the v1.0 test split. <span class="todo">TODO: install and run command.</span></p>
+        <pre><code>pip install TODO
+python eval.py --model YOUR_MODEL --split test --out results.json</code></pre></li>
+      <li><h3>Add one row per model and method</h3>
+        <p>Append to <code>leaderboard.csv</code>. Scores are percent accuracy with one decimal. Set <code>verified</code> to <code>no</code>; maintainers change it after reproducing your numbers.</p>
+        <pre><code>type,model,organization,model_url,access,params_b,method,melody,rhythm,timbre,harmony,overall,verified,submitted_by,date,source_url,benchmark_version,notes
+model,My-Audio-LLM,My Lab,https://huggingface.co/...,open,7,zero-shot,61.2,55.4,70.8,52.6,60.0,no,@your-github,2026-10-01,https://arxiv.org/...,1.0,</code></pre></li>
+      <li><h3>Open a pull request</h3>
+        <p>A check validates the file automatically and explains any problem. Fix it and push again; the check reruns.</p></li>
+      <li><h3>Maintainers review and merge</h3>
+        <p><span class="todo">TODO: what we check before merging, and how long review usually takes.</span></p></li>
+    </ol>
+  </section>
+</main>
+<footer class="site-foot"><div class="wrap" id="foot"></div></footer>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

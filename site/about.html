@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>About MusicListenBench</title>
+<meta name="description" content="How MusicListenBench tests whether audio LLMs hear individual musical attributes.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎧</text></svg>">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="index.html"><b>MusicListenBench</b><span>AMAAI Lab</span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html" >Leaderboard</a>
+    <a href="about.html" aria-current="page">About</a>
+    <a href="submit.html" >Submit</a>
+    <a data-link="datasetUrl" href="#">Dataset</a>
+    <a data-link="paperUrl" href="#">Paper</a>
+  </nav>
+</div></header>
+<main id="main" class="wrap">
+  <section class="block" style="border-top:0">
+    <h2>What the benchmark tests</h2>
+    <div class="prose">
+      <p>Audio large language models can caption a track and answer broad questions about it, which suggests they understand music. MusicListenBench tests whether that understanding holds at the level of individual musical attributes.</p>
+      <p>Every item asks one question: given two clips, are they the same or different in a named attribute? Each pair changes exactly one attribute and holds the rest fixed, so a correct answer requires hearing that attribute and ignoring the others.</p>
+    </div>
+    <ul class="aspect-list">
+      <li style="--c:var(--melody)"><b>Melody</b><span class="todo">TODO: how melody variants are constructed (e.g. which notes change, by how much).</span></li>
+      <li style="--c:var(--rhythm)"><b>Rhythm</b><span class="todo">TODO: how rhythm variants are constructed.</span></li>
+      <li style="--c:var(--timbre)"><b>Timbre</b><span class="todo">TODO: how timbre variants are constructed (instrument swaps, synthesis).</span></li>
+      <li style="--c:var(--harmony)"><b>Harmony</b><span class="todo">TODO: how harmony variants are constructed.</span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>Data</h2>
+    <div class="prose">
+      <p>The full dataset is on <a data-link="datasetUrl" href="#">Hugging Face</a>. A test split of 2,000 items (500 per attribute) is set aside for the leaderboard.</p>
+      <p><span class="todo">TODO: source of the musical material, clip length, sample rate, licence, and whether test labels are public or held out.</span></p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Evaluation</h2>
+    <div class="prose">
+      <p>Models answer a multiple-choice question for each pair. We report accuracy per attribute and overall.</p>
+      <p><span class="todo">TODO: exact prompt template, answer options, answer-extraction rule, how invalid answers are scored, and the chance level.</span></p>
+      <h3>Findings from the paper</h3>
+      <p>We evaluate open and closed-source audio LLMs, and show that GRPO post-training improves scores while supervised fine-tuning does not. <span class="todo">TODO: one or two headline numbers.</span></p>
+    </div>
+  </section>
+
+  <section class="block" id="cite">
+    <h2>Cite</h2>
+    <pre><code>@inproceedings{musiclistenbench2027,
+  title     = {MusicListenBench: Can Audio LLMs Hear the Difference Yet?},
+  author    = {TODO},
+  booktitle = {TODO},
+  year      = {TODO},
+  url       = {TODO}
+}</code></pre>
+  </section>
+</main>
+<footer class="site-foot"><div class="wrap" id="foot"></div></footer>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

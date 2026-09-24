@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>MusicListenBench leaderboard: can audio LLMs hear the difference yet?</title>
+<meta name="description" content="Leaderboard for MusicListenBench, a same-or-different listening benchmark for audio LLMs across melody, rhythm, timbre and harmony.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎧</text></svg>">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="index.html"><b>MusicListenBench</b><span>AMAAI Lab</span></a>
+  <nav class="nav" aria-label="Main">
+    <a href="index.html" aria-current="page">Leaderboard</a>
+    <a href="about.html" >About</a>
+    <a href="submit.html" >Submit</a>
+    <a data-link="datasetUrl" href="#">Dataset</a>
+    <a data-link="paperUrl" href="#">Paper</a>
+  </nav>
+</div></header>
+<main id="main" class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Can audio LLMs hear the difference yet?</h1>
+      <p class="lede">Each test item is a pair of clips that differ in exactly one attribute: melody, rhythm, timbre or harmony. A model scores only if it hears that one change and ignores everything else.</p>
+      <div class="actions">
+        <a class="btn primary" href="#rankings">See the rankings</a>
+        <a class="btn" href="submit.html">Submit a result</a>
+      </div>
+    </div>
+    <figure class="pair" id="pair" aria-label="Example test item: two clips drawn as piano rolls">
+      <p class="pair-q">Same or different melody?</p>
+      <div class="aspects" role="group" aria-label="Choose which attribute clip B changes">
+        <button type="button" data-aspect="melody" style="--c:var(--melody)">Melody</button>
+        <button type="button" data-aspect="rhythm" style="--c:var(--rhythm)">Rhythm</button>
+        <button type="button" data-aspect="timbre" style="--c:var(--timbre)">Timbre</button>
+        <button type="button" data-aspect="harmony" style="--c:var(--harmony)">Harmony</button>
+      </div>
+      <svg role="img" aria-hidden="true"></svg>
+      <figcaption class="pair-caption"></figcaption>
+    </figure>
+  </div>
+
+  <section class="block" id="rankings" aria-labelledby="rankings-h">
+    <h2 id="rankings-h">Rankings</h2>
+    <p class="sub">Accuracy (%) on the 2,000-item test split, 500 items per attribute. The thin tick on each bar marks chance. <span id="stat-models">—</span> models, last updated <span id="stat-updated">—</span>.</p>
+    <div class="controls">
+      <input type="search" id="search" placeholder="Search models, organizations or methods" aria-label="Search the leaderboard">
+      <div class="seg" id="access" role="group" aria-label="Filter by model access">
+        <button type="button" data-access="all" aria-pressed="true">All</button>
+        <button type="button" data-access="open" aria-pressed="false">Open weights</button>
+        <button type="button" data-access="closed" aria-pressed="false">Closed</button>
+      </div>
+      <label class="check"><input type="checkbox" id="verified"> Verified only</label>
+    </div>
+    <div class="table-scroll">
+      <table id="board">
+        <thead><tr>
+          <th scope="col">#</th>
+          <th scope="col" data-sort="model"><button>Model</button></th>
+          <th scope="col" data-sort="method"><button>Method</button></th>
+          <th scope="col" data-sort="melody"><button><i class="dot" style="--c:var(--melody)"></i>Melody</button></th>
+          <th scope="col" data-sort="rhythm"><button><i class="dot" style="--c:var(--rhythm)"></i>Rhythm</button></th>
+          <th scope="col" data-sort="timbre"><button><i class="dot" style="--c:var(--timbre)"></i>Timbre</button></th>
+          <th scope="col" data-sort="harmony"><button><i class="dot" style="--c:var(--harmony)"></i>Harmony</button></th>
+          <th scope="col" data-sort="overall" aria-sort="descending"><button>Overall</button></th>
+        </tr></thead>
+        <tbody><tr><td colspan="8" class="empty">Loading results…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="table-note">Overall is the mean of the four attribute scores. <span class="todo">TODO: confirm this definition.</span> Self-reported results have not yet been reproduced by the maintainers.</p>
+  </section>
+</main>
+<footer class="site-foot"><div class="wrap" id="foot"></div></footer>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

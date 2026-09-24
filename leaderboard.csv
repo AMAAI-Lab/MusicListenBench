@@ -1,0 +1,6 @@
+type,model,organization,model_url,access,params_b,method,melody,rhythm,timbre,harmony,overall,verified,submitted_by,date,source_url,benchmark_version,notes
+baseline,Random chance,—,,—,,—,50.0,50.0,50.0,50.0,50.0,yes,maintainers,2026-09-24,,1.0,TODO confirm chance level (assumes two answer options)
+model,PLACEHOLDER open model A,PLACEHOLDER org,https://huggingface.co/,open,7,zero-shot,61.2,55.4,70.8,52.6,60.0,yes,maintainers,2026-09-24,,1.0,PLACEHOLDER row - replace with paper results
+model,PLACEHOLDER open model A,PLACEHOLDER org,https://huggingface.co/,open,7,GRPO,74.0,63.8,78.2,60.4,69.1,yes,maintainers,2026-09-24,,1.0,PLACEHOLDER row - replace with paper results
+model,PLACEHOLDER open model A,PLACEHOLDER org,https://huggingface.co/,open,7,SFT,60.8,54.6,71.4,51.8,59.65,yes,maintainers,2026-09-24,,1.0,PLACEHOLDER row - replace with paper results
+model,PLACEHOLDER closed model B,PLACEHOLDER org,https://example.com/,closed,,zero-shot,66.4,58.0,73.6,55.2,63.3,yes,maintainers,2026-09-24,,1.0,PLACEHOLDER row - replace with paper results
