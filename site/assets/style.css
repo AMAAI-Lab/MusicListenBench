@@ -168,3 +168,10 @@ code { font-size: .92em; }
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; }
 }
+
+/* leaderboard with FLIP/STAY columns */
+table { min-width: 1080px; }
+td.num { width: 7%; }
+td.plain span { font-weight: 600; font-variant-numeric: tabular-nums; }
+tr.group th { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); font-size: .85rem; padding: .55rem .95rem; }
+.model small.note { display: block; margin-top: .15rem; }

@@ -28,31 +28,37 @@
     <h2>What the benchmark tests</h2>
     <div class="prose">
       <p>Audio large language models can caption a track and answer broad questions about it, which suggests they understand music. MusicListenBench tests whether that understanding holds at the level of individual musical attributes.</p>
-      <p>Every item asks one question: given two clips, are they the same or different in a named attribute? Each pair changes exactly one attribute and holds the rest fixed, so a correct answer requires hearing that attribute and ignoring the others.</p>
+      <p>Each item is one audio file: clip A, one second of silence, and clip B. One question follows, and the model answers with a single letter. Melody, harmony and timbre ask whether the two clips are the same; rhythm asks which clip is faster. When the clips differ, they differ in exactly the queried attribute.</p>
     </div>
     <ul class="aspect-list">
-      <li style="--c:var(--melody)"><b>Melody</b><span class="todo">TODO: how melody variants are constructed (e.g. which notes change, by how much).</span></li>
-      <li style="--c:var(--rhythm)"><b>Rhythm</b><span class="todo">TODO: how rhythm variants are constructed.</span></li>
-      <li style="--c:var(--timbre)"><b>Timbre</b><span class="todo">TODO: how timbre variants are constructed (instrument swaps, synthesis).</span></li>
-      <li style="--c:var(--harmony)"><b>Harmony</b><span class="todo">TODO: how harmony variants are constructed.</span></li>
+      <li style="--c:var(--melody)"><b>Melody</b><span>One note of a four-note motif moves by 100, 200, 400 or 700 cents. Clips are 2.5 s long.</span></li>
+      <li style="--c:var(--rhythm)"><b>Rhythm</b><span>The click rate of a hi-hat track differs by a ratio of 1.10, 1.20, 1.35 or 1.50, and the question is which clip is faster. Clips are 4.0 s long.</span></li>
+      <li style="--c:var(--timbre)"><b>Timbre</b><span>The instrument family changes (piano, guitar, violin or flute). Clips are 2.5 s long.</span></li>
+      <li style="--c:var(--harmony)"><b>Harmony</b><span>The third of the chord moves by 100, 200 or 300 cents. Clips are 2.0 s long.</span></li>
     </ul>
+  </section>
+
+  <section class="block">
+    <h2>FLIP and STAY</h2>
+    <div class="prose">
+      <p>For each clean test item there are two more variants, made by replacing clip B. In <b>FLIP</b>, clip B is an edited clip that changes the queried attribute, so the correct answer switches. In <b>STAY</b>, clip B sounds different but keeps the attribute: room echo, a mild EQ change, background hiss, or a transposition of up to 200 cents. The correct answer stays.</p>
+      <p>The two variants of an item have opposite answers. A model that ignores the audio therefore gets exactly one of them right and scores 50%, whatever letter it prefers (on rhythm this holds on average). The miss rate (MR) is the share of FLIP items answered wrongly; the false-flip rate (FFR) is the share of STAY items answered wrongly. The FLIP/STAY accuracy is Acc<sub>FS</sub> = 100 − (MR + FFR) / 2.</p>
+    </div>
   </section>
 
   <section class="block">
     <h2>Data</h2>
     <div class="prose">
-      <p>The full dataset is on <a data-link="datasetUrl" href="#">Hugging Face</a>. A test split of 2,000 items (500 per attribute) is set aside for the leaderboard.</p>
-      <p><span class="todo">TODO: source of the musical material, clip length, sample rate, licence, and whether test labels are public or held out.</span></p>
+      <p>The benchmark has 10,000 training items (2,500 per task) and 3,000 test items: 1,000 clean items (250 per task) and their 2,000 FLIP/STAY variants. All audio is generated from symbolic music and rendered with FluidSynth and freely available soundfonts, so every answer is known exactly and no human labelling is needed. Test items use pitch ranges, a soundfont and sound effects that never appear in training. The item files, the generator and the scoring script are in the <a data-link="githubRepo" href="#">code repository</a>.</p>
     </div>
   </section>
 
   <section class="block">
     <h2>Evaluation</h2>
     <div class="prose">
-      <p>Models answer a multiple-choice question for each pair. We report accuracy per attribute and overall.</p>
-      <p><span class="todo">TODO: exact prompt template, answer options, answer-extraction rule, how invalid answers are scored, and the chance level.</span></p>
+      <p>Each question ends with a fixed instruction that says which letter means which answer. Open models are scored by comparing the probabilities of the tokens ‘A’ and ‘B’; API models are scored by the letter they generate. Missing or invalid answers count as wrong. Zero-shot models and models that used the training split are listed separately.</p>
       <h3>Findings from the paper</h3>
-      <p>We evaluate open and closed-source audio LLMs, and show that GRPO post-training improves scores while supervised fine-tuning does not. <span class="todo">TODO: one or two headline numbers.</span></p>
+      <p>Without training, seven of eight open audio LLMs score within 4 points of the 50% floor on FLIP/STAY. The best commercial model, Gemini 2.5 Pro, reaches 74.2%, and human listeners reach 87.0%. Post-training Qwen2.5-Omni with GRPO on the training split raises its clean accuracy from 61.2% to 99.0%, but its FLIP/STAY accuracy only reaches 86.0%: it misses almost no change (1.9%) and still false-flips on 26.1% of STAY items.</p>
     </div>
   </section>
 
