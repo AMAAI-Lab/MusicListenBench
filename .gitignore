@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+# audio and generated files are distributed as archives, not through git
+data/audio/
+data/audio_perturb/
+data/transfer/
+generated/
+musiccaps/
+checkpoints/
+assets/soundfonts/
+third_party/
+# outputs of the evaluation and training scripts
+results/*
+!results/captioning/

@@ -1,0 +1,67 @@
+# Sound-only changes ("families") and the frozen train/test family split.
+
+families:
+  instrument:
+    kind: soundfont_program_swap
+    # drawn from soundfont_split.train in base.yaml; the program stays the task's
+    # base program. Program identity is the timbre task's content dial, so it is
+    # never a nuisance for that task (see row_overrides).
+
+  music_resample:
+    kind: music_resample
+    # The timbre task's substitute for `instrument`: the melody and key are drawn
+    # again (from the task's own split-respecting pitch pool) on the same instrument.
+    # Counted as one family.
+
+  room:
+    kind: pyroomacoustics
+    rt60_values_nuisance: [0.2, 0.5, 1.0]   # reverberation time, seconds
+    rt60_values_stress: [2.0]                # certification stress only, not a nuisance
+    room_dim: [6.0, 5.0, 3.0]
+
+  codec:
+    kind: ffmpeg
+    settings_nuisance:
+      - {codec: opus, bitrate_kbps: 48}
+      - {codec: mp3, bitrate_kbps: 128}
+    settings_stress:
+      - {codec: opus, bitrate_kbps: 24}
+
+  eq:
+    kind: pedalboard_shelf
+    gain_db_choices: [-3.0, 3.0]
+    low_shelf_hz: 200.0
+    high_shelf_hz: 4000.0
+
+  hiss:
+    kind: additive_noise
+    level_dbfs: -50.0
+
+  transposition:
+    kind: transposition
+    # Applies to melody and harmony only: a transposed melody is the same melody,
+    # and a transposed chord keeps its quality. It sits orthogonal to the train/test
+    # family split below: it is applied to every melody and harmony item of either
+    # split, on top of whichever family that item's split otherwise draws.
+    range_cents: [0, 200]
+    rows: [Q1_melody, Q2_harmony]
+
+# Frozen before training. audit_contamination.py enforces this as a hard failure:
+# an item's split determines which families its re-renders may draw from.
+split:
+  train_families: [instrument, codec]
+  test_families: [room, eq, hiss]
+
+# The timbre task cannot use `instrument` as a nuisance because instrument is its
+# content dial.
+row_overrides:
+  Q3_timbre:
+    train_families: [music_resample, codec]
+    test_families: [room, eq, hiss]
+
+# transposition is layered on top of the split above for these two tasks.
+extra_invariance_axes:
+  Q1_melody:
+    transposition: {unit: cents, range: [0, 200]}
+  Q2_harmony:
+    transposition: {unit: cents, range: [0, 200]}

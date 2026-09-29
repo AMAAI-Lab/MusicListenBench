@@ -1,0 +1,48 @@
+# Global generator settings.
+
+seed: 0
+
+audio:
+  sample_rate: 44100
+  bit_depth: 16
+  channels: 1
+  target_lufs: -23.0          # every clip is normalised to -23 LUFS
+  max_clip_seconds: 10.0
+
+tolerances:
+  # Acceptance tests check each rendered item against these tolerances.
+  # The pitch and loudness tolerances are set by the soundfonts' own per-sample
+  # tuning noise and by loudness-normalisation headroom on short, sparse clips.
+  pitch_cents: 25              # max |measured interval - intended| fundamental, cents
+  tempo_ratio: 0.01            # max |measured - intended| click-rate ratio
+  loudness_db: 1.0             # max |measured - intended| integrated-loudness delta
+  duration_samples: 0          # equal-duration invariant is sample-exact, no slack
+  filesize_bytes: 2048         # encoded file sizes within a trial agree to within this
+
+leak_audit:
+  auc_max: 0.55                # simple audio statistics must not predict the answer above this AUC
+
+paths:
+  # relative to the repository root; override with --output-root or the
+  # MLB_OUTPUT_ROOT environment variable.
+  output_root: generated
+  audio_subdir: audio
+  manifest_name: manifest.jsonl
+  artifacts_subdir: artifacts
+
+soundfonts:
+  # File names, resolved against $MLB_SOUNDFONT_DIR (default: assets/soundfonts/).
+  # Two soundfonts render the training split; the third renders every test item
+  # and is never used in training. Sources and licences are in the paper (Appendix A).
+  FluidR3_GM: FluidR3_GM.sf2
+  GeneralUserGS: GeneralUserGSv1.471.sf2
+  MuseScore_General: MuseScore_General.sf2
+
+soundfont_split:
+  train: [FluidR3_GM, GeneralUserGS]
+  test: [MuseScore_General]
+
+# Sizing is stated per task in tasks.yaml (250 test + 2,500 train items per task,
+# i.e. 1,000 test + 10,000 train items in total).
+
+git_commit: null   # filled in at generation time by make_render_sets.py

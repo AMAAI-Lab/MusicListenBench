@@ -18,8 +18,7 @@ SITE, CSV = ROOT / "site", ROOT / "leaderboard.csv"
 # Anything that could identify the authors. Case-insensitive substring match.
 # TODO: add every author's surname, and any other giveaway (grant names, emails).
 LEAK_TERMS = [
-    "AMAAI", "amaai-lab", "SUTD", "Singapore University",
-    "sleeping-ai",  # style reference, not needed in either build
+    "AMAAI", "amaai-lab", "SUTD", "Singapore University","roy", "heremmans", "mehrish",  # style reference, not needed in either build
 ]
 
 ANON_BRAND = "Anonymous submission"

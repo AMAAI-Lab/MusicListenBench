@@ -1,0 +1,20 @@
+# The frozen train/test partition. The split is at the CONTENT level: an item is
+# wholly train or wholly test. A train item's sound-only re-renders are drawn
+# only from the train families in transforms.yaml, a test item's only from the
+# test families. Content never crosses the boundary.
+
+content_split:
+  train_fraction: 0.8       # informational only: budgets in tasks.yaml state the counts directly
+  assignment: per_item
+
+# No task is held out of training in the main benchmark. (The leave-one-task-out
+# experiment builds its own training files.)
+transfer_split: false
+
+families:
+  train: [instrument, codec, music_resample]   # music_resample is the timbre task's train substitute
+  test: [room, eq, hiss]
+
+soundfonts:
+  train: [FluidR3_GM, GeneralUserGS]
+  test: [MuseScore_General]

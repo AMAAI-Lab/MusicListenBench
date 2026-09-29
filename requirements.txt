@@ -1,0 +1,33 @@
+# Core (scoring, item files, leaderboard tools, tables): CPU only
+numpy>=1.26
+scipy
+soundfile
+pyyaml
+scikit-learn
+
+# Generator; also needs the FluidSynth and ffmpeg programs
+music21==10.5.0
+pretty_midi==0.2.11
+pyloudnorm==0.2.0
+pyroomacoustics==0.10.1
+pedalboard==0.9.24
+librosa==0.11.0
+
+# Evaluating and training open models
+torch==2.12.1
+torchaudio==2.11.0
+transformers==5.12.1
+accelerate==1.14.0
+peft==0.19.1
+safetensors==0.8.0
+tokenizers==0.22.2
+sentencepiece==0.2.1
+
+# Commercial models
+openai
+google-genai==2.10.0
+
+# Captioning side-effect check
+nltk==3.9.4
+bert-score==0.3.13
+yt-dlp==2026.8.19
