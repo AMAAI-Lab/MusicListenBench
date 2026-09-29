@@ -5,13 +5,13 @@ window.MLB_CONFIG = {
   title: "MusicListenBench",
   lab: "Anonymous authors (under review)",
   labUrl: null,
-  githubRepo: null,  // TODO: Anonymous GitHub mirror, e.g. "https://anonymous.4open.science/r/XXXX"
-  csvSourceUrl: null, // optional: the CSV inside the mirror, e.g. ".../r/XXXX/leaderboard.csv"
-  datasetUrl: null,  // TODO: anonymous dataset location, or leave null if it is in the supplementary material
+  githubRepo: "https://anonymous.4open.science/r/MusicListenBench-F38B",
+  csvSourceUrl: "https://anonymous.4open.science/r/MusicListenBench-F38B/leaderboard.csv",
+  datasetUrl: null,  // the item files are in the code repository (data/); the About page links to it
   spaceUrl: null,
   paperUrl: null,
   contact: null,
   benchmarkVersion: "1.0",
-  itemsPerAspect: 500,
+  itemsPerAspect: 250,
   csvPath: "leaderboard.csv",
 };

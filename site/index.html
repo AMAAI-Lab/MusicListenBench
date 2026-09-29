@@ -27,7 +27,7 @@
   <div class="hero">
     <div>
       <h1>Can audio LLMs hear the difference yet?</h1>
-      <p class="lede">Each test item is a pair of clips that differ in exactly one attribute: melody, rhythm, timbre or harmony. A model scores only if it hears that one change and ignores everything else.</p>
+      <p class="lede">Each test item is two short clips and one question about melody, rhythm, timbre or harmony. Every item comes in two variants: in FLIP the music changes and the answer switches, in STAY only the sound changes (room echo, EQ, hiss, transposition) and the answer stays. A model that ignores the audio scores 50%.</p>
       <div class="actions">
         <a class="btn primary" href="#rankings">See the rankings</a>
         <a class="btn" href="submit.html">Submit a result</a>
@@ -48,7 +48,7 @@
 
   <section class="block" id="rankings" aria-labelledby="rankings-h">
     <h2 id="rankings-h">Rankings</h2>
-    <p class="sub">Accuracy (%) on the 2,000-item test split, 500 items per attribute. The thin tick on each bar marks chance. <span id="stat-models">—</span> models, last updated <span id="stat-updated">—</span>.</p>
+    <p class="sub">Test split: 1,000 clean items (250 per task) and 2,000 FLIP/STAY items. All numbers are percentages; the thin tick on each bar marks 50%. <span id="stat-models">—</span> models, last updated <span id="stat-updated">—</span>.</p>
     <div class="controls">
       <input type="search" id="search" placeholder="Search models, organizations or methods" aria-label="Search the leaderboard">
       <div class="seg" id="access" role="group" aria-label="Filter by model access">
@@ -68,12 +68,16 @@
           <th scope="col" data-sort="rhythm"><button><i class="dot" style="--c:var(--rhythm)"></i>Rhythm</button></th>
           <th scope="col" data-sort="timbre"><button><i class="dot" style="--c:var(--timbre)"></i>Timbre</button></th>
           <th scope="col" data-sort="harmony"><button><i class="dot" style="--c:var(--harmony)"></i>Harmony</button></th>
-          <th scope="col" data-sort="overall" aria-sort="descending"><button>Overall</button></th>
+          <th scope="col" data-sort="overall" title="Clean accuracy on all 1,000 clean items"><button>Clean (all)</button></th>
+          <th scope="col" data-sort="acc_fs" aria-sort="descending" title="FLIP/STAY accuracy = 100 − (MR + FFR) / 2"><button>Acc<sub>FS</sub></button></th>
+          <th scope="col" data-sort="miss_rate" title="Miss rate: share of FLIP items answered wrongly (lower is better)"><button>MR</button></th>
+          <th scope="col" data-sort="false_flip_rate" title="False-flip rate: share of STAY items answered wrongly (lower is better)"><button>FFR</button></th>
+          <th scope="col" data-sort="a_rate" title="Share of the answer ‘A’ on the clean items; 52.8% of the correct answers are ‘A’"><button>A rate</button></th>
         </tr></thead>
-        <tbody><tr><td colspan="8" class="empty">Loading results…</td></tr></tbody>
+        <tbody><tr><td colspan="12" class="empty">Loading results…</td></tr></tbody>
       </table>
     </div>
-    <p class="table-note">Overall is the mean of the four attribute scores. <span class="todo">TODO: confirm this definition.</span> Self-reported results have not yet been reproduced by the maintainers.</p>
+    <p class="table-note"><b>Melody … Clean (all):</b> accuracy on the clean items; “all” is the mean of the four tasks. <b>Acc<sub>FS</sub>:</b> accuracy on the FLIP and STAY items, 100 − (MR + FFR) / 2; a model that ignores the audio scores 50% whatever letter it prefers. <b>MR</b> (miss rate): share of FLIP items answered wrongly. <b>FFR</b> (false-flip rate): share of STAY items answered wrongly. Lower is better for MR and FFR. <b>A rate:</b> share of ‘A’ answers on the clean items, so letter bias is visible. Models are ranked by Acc<sub>FS</sub> within each group. Self-reported results have not yet been reproduced by the maintainers.</p>
   </section>
 </main>
 <footer class="site-foot"><div class="wrap" id="foot"></div></footer>
