@@ -1,6 +1,8 @@
 (() => {
   const C = window.MLB_CONFIG;
   const ASPECTS = ["melody", "rhythm", "timbre", "harmony"];
+  const NUMERIC = ASPECTS.concat(["overall", "acc_fs", "miss_rate", "false_flip_rate", "a_rate"]);
+  const LOWER_IS_BETTER = ["miss_rate", "false_flip_rate"];
 
   /* ---------- Config-driven links and footer ---------- */
   document.querySelectorAll("[data-link]").forEach(a => {
@@ -44,14 +46,14 @@
   /* ---------- Leaderboard ---------- */
   const board = document.getElementById("board");
   if (board) {
-    const state = { rows: [], sort: "overall", dir: -1, q: "", access: "all", verifiedOnly: false, chance: 50 };
+    const state = { rows: [], sort: "acc_fs", dir: -1, q: "", access: "all", verifiedOnly: false, chance: 50 };
     const tbody = board.querySelector("tbody");
 
     fetch(C.csvPath, { cache: "no-cache" })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(t => {
         state.rows = parseCSV(t).map(r => {
-          ASPECTS.concat("overall").forEach(k => r[k] = parseFloat(r[k]));
+          NUMERIC.forEach(k => r[k] = parseFloat(r[k]));
           return r;
         });
         const base = state.rows.find(r => r.type === "baseline" && /chance/i.test(r.model));
@@ -63,48 +65,71 @@
         render();
       })
       .catch(() => {
-        tbody.innerHTML = `<tr><td colspan="8" class="empty">Couldn't load ${esc(C.csvPath)}. If you opened this file directly from disk, run <code>python -m http.server</code> in the site folder instead.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="12" class="empty">Couldn't load ${esc(C.csvPath)}. If you opened this file directly from disk, run <code>python -m http.server</code> in the site folder instead.</td></tr>`;
       });
+
+    const COLS = 12;
+    const fmt = v => Number.isNaN(v) ? "—" : v.toFixed(1);
+    const isTrained = r => !/^zero-shot$/i.test(r.method);
 
     function render() {
       const q = state.q.toLowerCase();
-      let rows = state.rows.filter(r =>
+      const rows = state.rows.filter(r =>
         (r.type === "baseline" || state.access === "all" || r.access === state.access) &&
         (r.type === "baseline" || !state.verifiedOnly || r.verified === "yes") &&
         (!q || `${r.model} ${r.organization} ${r.method}`.toLowerCase().includes(q)));
       const key = state.sort;
       rows.sort((a, b) => {
         const av = a[key], bv = b[key];
-        return typeof av === "number" ? (av - bv) * state.dir : String(av).localeCompare(String(bv)) * state.dir;
+        if (typeof av === "number") {
+          if (Number.isNaN(av) || Number.isNaN(bv)) return Number.isNaN(av) - Number.isNaN(bv); // empty values last
+          return (av - bv) * state.dir;
+        }
+        return String(av).localeCompare(String(bv)) * state.dir;
       });
-      let rank = 0;
-      const byOverall = [...rows].filter(r => r.type === "model").sort((a, b) => b.overall - a.overall);
-      const rankOf = new Map(byOverall.map(r => [r, ++rank]));
+      // Zero-shot models and models trained on the released training split are listed separately.
+      const groups = [
+        ["Zero-shot models", rows.filter(r => r.type === "model" && !isTrained(r))],
+        ["Models trained on the released training split", rows.filter(r => r.type === "model" && isTrained(r))],
+        ["References", rows.filter(r => r.type === "baseline")],
+      ].filter(g => g[1].length);
 
-      if (!rows.length) { tbody.innerHTML = `<tr><td colspan="8" class="empty">No results match these filters. Clear the search or show all models.</td></tr>`; return; }
+      if (!groups.length) { tbody.innerHTML = `<tr><td colspan="${COLS}" class="empty">No results match these filters. Clear the search or show all models.</td></tr>`; return; }
 
-      tbody.innerHTML = rows.map(r => {
+      // Rank inside each group by FLIP/STAY accuracy.
+      const rankOf = new Map();
+      groups.filter(g => g[1][0].type === "model").forEach(([, g]) =>
+        [...g].sort((a, b) => b.acc_fs - a.acc_fs).forEach((r, i) => rankOf.set(r, i + 1)));
+
+      const rowHtml = r => {
         const isBase = r.type === "baseline";
-        const cell = (k, cls = "num") => `<td class="${cls}" style="--c:var(--${k === "overall" ? "ink" : k});--chance:${state.chance}%">
-            <div class="score"><span>${r[k].toFixed(1)}</span><div class="bar"><i style="width:${r[k]}%"></i></div></div></td>`;
+        const bar = (k, cls = "num") => `<td class="${cls}" style="--c:${ASPECTS.includes(k) ? `var(--${k})` : "var(--ink)"};--chance:${state.chance}%">
+            <div class="score"><span>${fmt(r[k])}</span><div class="bar"><i style="width:${r[k] || 0}%"></i></div></div></td>`;
+        const plain = k => `<td class="num plain"><span>${fmt(r[k])}</span></td>`;
         const name = r.model_url ? `<a href="${esc(r.model_url)}">${esc(r.model)}</a>` : esc(r.model);
         const tags = isBase ? "" :
           `<span class="tag">${esc(r.access)}</span>` + (r.verified === "yes" ? "" : `<span class="tag self" title="Self-reported, not yet reproduced by maintainers">self-reported</span>`);
         const meta = isBase ? "Reference line" : [r.organization, r.params_b && `${r.params_b}B`].filter(Boolean).map(esc).join(", ");
         const src = r.source_url ? ` <a href="${esc(r.source_url)}">source</a>` : "";
+        const note = isBase ? "" : (r.notes ? `<small class="note">${esc(r.notes)}</small>` : "");
         return `<tr class="${isBase ? "baseline" : ""}">
           <td class="rank">${isBase ? "" : rankOf.get(r)}</td>
-          <td class="model"><b>${name}</b><small>${meta}${src}</small>${tags ? `<div class="tags">${tags}</div>` : ""}</td>
+          <td class="model"${isBase && r.notes ? ` title="${esc(r.notes)}"` : ""}><b>${name}</b><small>${meta}${src}</small>${note}${tags ? `<div class="tags">${tags}</div>` : ""}</td>
           <td class="method">${esc(r.method)}</td>
-          ${ASPECTS.map(k => cell(k)).join("")}
-          ${cell("overall", "num overall")}
+          ${ASPECTS.map(k => bar(k)).join("")}
+          ${bar("overall", "num overall")}
+          ${bar("acc_fs", "num overall")}
+          ${plain("miss_rate")}${plain("false_flip_rate")}${plain("a_rate")}
         </tr>`;
-      }).join("");
+      };
+
+      tbody.innerHTML = groups.map(([title, g]) =>
+        `<tr class="group"><th scope="colgroup" colspan="${COLS}">${esc(title)}</th></tr>` + g.map(rowHtml).join("")).join("");
     }
 
     board.querySelectorAll("th[data-sort] button").forEach(btn => btn.addEventListener("click", () => {
       const th = btn.closest("th"), k = th.dataset.sort;
-      state.dir = state.sort === k ? -state.dir : (["model", "method"].includes(k) ? 1 : -1);
+      state.dir = state.sort === k ? -state.dir : (["model", "method"].concat(LOWER_IS_BETTER).includes(k) ? 1 : -1);
       state.sort = k;
       board.querySelectorAll("th[data-sort]").forEach(h => h.removeAttribute("aria-sort"));
       th.setAttribute("aria-sort", state.dir === -1 ? "descending" : "ascending");
@@ -133,8 +158,9 @@
     const variants = {
       melody: { mel: m => m.map((n, i) => i === 4 ? [7, 12, 1] : n), changed: { mel: [4] },
         caption: "In clip B one note moves up. Rhythm, timbre and harmony are identical, so the answer is: different melody." },
-      rhythm: { mel: m => m.map((n, i) => i === 2 ? [4, 11, 1] : i === 3 ? [5, 9, 2] : n), changed: { mel: [2, 3] },
-        caption: "Clip B plays the same pitches with different timing. The answer is: different rhythm." },
+      rhythm: { mel: m => m.map(([t, p, d]) => [t * 0.8, p, d * 0.8]), ch: c => c.map(([t, ps, d]) => [t * 0.8, ps, d * 0.8]),
+        changed: { mel: [0, 1, 2, 3, 4, 5, 6, 7], ch: [0, 1] },
+        caption: "Rhythm items ask which clip is faster. Clip B plays the same notes at a faster tempo, so the answer is: clip B." },
       timbre: { timbre: true, changed: { mel: [0, 1, 2, 3, 4, 5, 6, 7], ch: [0, 1] },
         caption: "Every note is the same, played on a different instrument. The answer is: different timbre." },
       harmony: { ch: c => c.map((n, i) => i === 1 ? [8, [0, 4], 8] : n), changed: { ch: [1] },
@@ -172,7 +198,7 @@
       });
       svg.innerHTML = out;
       caption.textContent = variants[aspect].caption;
-      q.textContent = `Same or different ${aspect}?`;
+      q.textContent = aspect === "rhythm" ? "Which clip is faster?" : `Same or different ${aspect}?`;
       pair.querySelectorAll(".aspects button").forEach(b => b.setAttribute("aria-pressed", b.dataset.aspect === aspect));
     }
     svg.setAttribute("viewBox", `0 0 ${W} ${top * 2 + laneH * 2 + gap}`);
