@@ -1,24 +1,32 @@
-type,model,organization,model_url,access,params_b,method,melody,rhythm,timbre,harmony,overall,acc_fs,miss_rate,false_flip_rate,a_rate,readout,verified,submitted_by,date,source_url,benchmark_version,notes
-baseline,Random chance,—,,—,,—,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,,—,yes,maintainers,2026-09-30,,1.0,"Guessing at random. A model that ignores the audio scores 50% on FLIP/STAY, whatever letter it prefers"
-baseline,Always answer A,—,,—,,—,54.0,50.8,56.8,49.6,52.8,49.5,53.0,48.1,100.0,—,yes,maintainers,2026-09-30,,1.0,Ignores the audio and always answers A
-baseline,Human listeners (12),—,,—,,—,79.2,87.5,95.8,87.5,87.5,87.0,5.2,20.8,,—,yes,maintainers,2026-09-30,,1.0,"Paper Table 2. Twelve listeners, 24 items each: 24 clean answers per task, 96 FLIP and 96 STAY answers"
-model,Qwen2-Audio,Alibaba,https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct,open,8.4,zero-shot,46.0,49.2,43.2,50.4,47.2,50.7,47.7,50.9,1.4,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Qwen2.5-Omni,Alibaba,https://huggingface.co/Qwen/Qwen2.5-Omni-7B,open,10.7,zero-shot,68.8,50.0,66.8,59.2,61.2,61.2,36.7,41.0,52.4,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Audio Flamingo 3,NVIDIA,https://huggingface.co/nvidia/audio-flamingo-3-hf,open,16.5,zero-shot,51.2,52.8,58.0,48.8,52.7,51.4,49.6,47.6,87.7,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Phi-4-multimodal,Microsoft,https://huggingface.co/microsoft/Phi-4-multimodal-instruct,open,5.6,zero-shot,54.4,50.8,56.8,47.2,52.3,49.1,53.5,48.3,95.9,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Kimi-Audio,Moonshot AI,https://huggingface.co/moonshotai/Kimi-Audio-7B-Instruct,open,7.9,zero-shot,57.6,52.8,53.2,47.2,52.7,51.0,52.3,45.7,90.1,logprob,yes,maintainers,2026-09-30,,1.0,
-model,MiMo-Audio,Xiaomi,https://huggingface.co/XiaomiMiMo/MiMo-Audio-7B-Instruct,open,8.0,zero-shot,54.0,59.6,58.0,54.4,56.5,52.3,49.4,46.1,91.3,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Fun-Audio-Chat,FunAudioLLM,https://huggingface.co/FunAudioLLM/Fun-Audio-Chat-8B,open,9.5,zero-shot,50.0,49.6,60.0,51.6,52.8,53.7,46.6,46.1,62.2,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Step-Audio 2,StepFun,https://huggingface.co/stepfun-ai/Step-Audio-2-mini,open,8.3,zero-shot,52.4,52.4,62.8,50.0,54.4,52.7,49.1,45.5,69.4,logprob,yes,maintainers,2026-09-30,,1.0,
-model,GPT-Audio-mini,OpenAI,,closed,,zero-shot,47.6,50.8,54.4,51.6,51.1,49.6,50.6,50.3,81.1,generated,yes,maintainers,2026-09-30,,1.0,
-model,GPT-Audio-1.5,OpenAI,,closed,,zero-shot,45.6,44.0,52.0,47.6,47.3,52.1,45.8,50.1,18.3,generated,yes,maintainers,2026-09-30,,1.0,
-model,Gemini 2.5 Pro,Google,,closed,,zero-shot,80.0,79.6,88.4,68.8,79.2,74.2,24.7,26.9,60.8,generated,yes,maintainers,2026-09-30,,1.0,
-model,Gemini 3.8 Flash,Google,,closed,,zero-shot,53.6,72.4,85.6,54.4,66.5,64.0,33.0,39.1,43.3,generated,yes,maintainers,2026-09-30,,1.0,
-model,Qwen2-Audio,This paper,,open,8.4,GRPO (LoRA),70.8,51.6,92.4,60.8,68.9,63.8,29.7,42.7,31.3,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Qwen2-Audio,This paper,,open,8.4,GRPO (full),70.4,52.0,80.8,61.6,66.2,61.5,31.7,45.4,23.0,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Qwen2.5-Omni,This paper,,open,10.7,GRPO (LoRA),99.6,100.0,99.6,96.8,99.0,86.0,1.9,26.1,52.2,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Qwen2.5-Omni,This paper,,open,10.7,GRPO (full),100.0,99.6,100.0,85.2,96.2,83.5,4.2,28.9,49.0,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Audio Flamingo 3,This paper,,open,16.5,GRPO (LoRA),57.2,50.8,97.6,74.8,70.1,64.5,29.7,41.4,61.1,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Audio Flamingo 3,This paper,,open,16.5,GRPO (full),68.0,69.2,99.6,80.8,79.4,70.4,22.5,36.7,43.2,logprob,yes,maintainers,2026-09-30,,1.0,"Stopped at step 500, where validation accuracy peaks; the other GRPO runs use step 1000"
-model,Phi-4-multimodal,This paper,,open,5.6,GRPO (LoRA),52.0,50.8,56.8,49.6,52.3,49.1,53.4,48.4,99.5,logprob,yes,maintainers,2026-09-30,,1.0,
-model,Phi-4-multimodal,This paper,,open,5.6,GRPO (full),55.6,50.8,88.8,54.0,62.3,58.9,42.9,39.3,79.3,logprob,yes,maintainers,2026-09-30,,1.0,
+type,model,organization,model_url,access,domain,params_b,method,melody,rhythm,timbre,harmony,overall,acc_fs,miss_rate,false_flip_rate,a_rate,readout,verified,submitted_by,date,source_url,benchmark_version,notes
+baseline,Random chance,—,,—,—,,—,50.0,50.0,50.0,50.0,50.0,50.0,50.0,50.0,,—,yes,maintainers,2026-09-30,,1.0,"Guessing at random. A model that ignores the audio scores 50% on FLIP/STAY, whatever letter it prefers"
+baseline,Always answer A,—,,—,—,,—,54.0,50.8,56.8,49.6,52.8,49.5,53.0,48.1,100.0,—,yes,maintainers,2026-09-30,,1.0,Ignores the audio and always answers A
+baseline,Human listeners (12),—,,—,—,,—,79.2,87.5,95.8,87.5,87.5,87.0,5.2,20.8,,—,yes,maintainers,2026-09-30,,1.0,"Paper Table 2. Twelve listeners, 24 items each: 24 clean answers per task, 96 FLIP and 96 STAY answers"
+model,Qwen2-Audio,Alibaba,https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct,open,general,8.4,zero-shot,46.0,49.2,43.2,50.4,47.2,50.7,47.7,50.9,1.4,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Qwen2.5-Omni,Alibaba,https://huggingface.co/Qwen/Qwen2.5-Omni-7B,open,general,10.7,zero-shot,68.8,50.0,66.8,59.2,61.2,61.2,36.7,41.0,52.4,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Audio Flamingo 3,NVIDIA,https://huggingface.co/nvidia/audio-flamingo-3-hf,open,general,16.5,zero-shot,51.2,52.8,58.0,48.8,52.7,51.4,49.6,47.6,87.7,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Phi-4-multimodal,Microsoft,https://huggingface.co/microsoft/Phi-4-multimodal-instruct,open,general,5.6,zero-shot,54.4,50.8,56.8,47.2,52.3,49.1,53.5,48.3,95.9,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Kimi-Audio,Moonshot AI,https://huggingface.co/moonshotai/Kimi-Audio-7B-Instruct,open,general,7.9,zero-shot,57.6,52.8,53.2,47.2,52.7,51.0,52.3,45.7,90.1,logprob,yes,maintainers,2026-09-30,,1.0,
+model,MiMo-Audio,Xiaomi,https://huggingface.co/XiaomiMiMo/MiMo-Audio-7B-Instruct,open,general,8.0,zero-shot,54.0,59.6,58.0,54.4,56.5,52.3,49.4,46.1,91.3,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Fun-Audio-Chat,FunAudioLLM,https://huggingface.co/FunAudioLLM/Fun-Audio-Chat-8B,open,general,9.5,zero-shot,50.0,49.6,60.0,51.6,52.8,53.7,46.6,46.1,62.2,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Step-Audio 2,StepFun,https://huggingface.co/stepfun-ai/Step-Audio-2-mini,open,general,8.3,zero-shot,52.4,52.4,62.8,50.0,54.4,52.7,49.1,45.5,69.4,logprob,yes,maintainers,2026-09-30,,1.0,
+model,GPT-Audio-mini,OpenAI,,closed,general,,zero-shot,47.6,50.8,54.4,51.6,51.1,49.6,50.6,50.3,81.1,generated,yes,maintainers,2026-09-30,,1.0,
+model,GPT-Audio-1.5,OpenAI,,closed,general,,zero-shot,45.6,44.0,52.0,47.6,47.3,52.1,45.8,50.1,18.3,generated,yes,maintainers,2026-09-30,,1.0,
+model,Gemini 2.5 Pro,Google,,closed,general,,zero-shot,80.0,79.6,88.4,68.8,79.2,74.2,24.7,26.9,60.8,generated,yes,maintainers,2026-09-30,,1.0,
+model,Gemini 3.8 Flash,Google,,closed,general,,zero-shot,53.6,72.4,85.6,54.4,66.5,64.0,33.0,39.1,43.3,generated,yes,maintainers,2026-09-30,,1.0,
+model,Qwen2-Audio,This paper,,open,general,8.4,GRPO (LoRA),70.8,51.6,92.4,60.8,68.9,63.8,29.7,42.7,31.3,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Qwen2-Audio,This paper,,open,general,8.4,GRPO (full),70.4,52.0,80.8,61.6,66.2,61.5,31.7,45.4,23.0,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Qwen2.5-Omni,This paper,,open,general,10.7,GRPO (LoRA),99.6,100.0,99.6,96.8,99.0,86.0,1.9,26.1,52.2,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Qwen2.5-Omni,This paper,,open,general,10.7,GRPO (full),100.0,99.6,100.0,85.2,96.2,83.5,4.2,28.9,49.0,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Audio Flamingo 3,This paper,,open,general,16.5,GRPO (LoRA),57.2,50.8,97.6,74.8,70.1,64.5,29.7,41.4,61.1,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Audio Flamingo 3,This paper,,open,general,16.5,GRPO (full),68.0,69.2,99.6,80.8,79.4,70.4,22.5,36.7,43.2,logprob,yes,maintainers,2026-09-30,,1.0,"Stopped at step 500, where validation accuracy peaks; the other GRPO runs use step 1000"
+model,Phi-4-multimodal,This paper,,open,general,5.6,GRPO (LoRA),52.0,50.8,56.8,49.6,52.3,49.1,53.4,48.4,99.5,logprob,yes,maintainers,2026-09-30,,1.0,
+model,Phi-4-multimodal,This paper,,open,general,5.6,GRPO (full),55.6,50.8,88.8,54.0,62.3,58.9,42.9,39.3,79.3,logprob,yes,maintainers,2026-09-30,,1.0,
+model,SALMONN,Tsinghua & ByteDance,https://huggingface.co/tsinghua-ee/SALMONN,open,general,13.8,zero-shot,54.0,50.8,56.8,49.6,52.8,49.5,53.0,48.1,100.0,logprob,yes,maintainers,2026-10-23,,1.0,
+model,Music Flamingo,NVIDIA,https://huggingface.co/nvidia/music-flamingo-2601-hf,open,music,8.3,zero-shot,49.6,51.6,66.0,48.0,53.8,54.1,45.4,46.5,59.4,logprob,yes,maintainers,2026-10-23,,1.0,
+model,MOSS-Music,OpenMOSS,https://huggingface.co/OpenMOSS-Team/MOSS-Music-8B-Instruct,open,music,9.1,zero-shot,46.0,46.4,62.4,51.6,51.6,54.0,43.7,48.3,23.2,logprob,yes,maintainers,2026-10-23,,1.0,
+model,MusiLingo,M-A-P,https://huggingface.co/m-a-p/MusiLingo-long-v1,open,music,7.1,zero-shot,48.8,50.8,52.4,49.6,50.4,50.8,48.0,50.5,64.2,logprob,yes,maintainers,2026-10-23,,1.0,
+model,MU-LLaMA,MU-LLaMA authors,https://huggingface.co/mu-llama/MU-LLaMA,open,music,7.7,zero-shot,54.0,50.8,56.8,49.6,52.8,49.5,53.0,48.1,100.0,logprob,yes,maintainers,2026-10-23,,1.0,"Scored without the optional kNN audio cache, whose index is not in the released weights"
+model,Music Flamingo,This paper,,open,music,8.3,GRPO (LoRA),64.4,50.8,95.2,76.8,71.8,68.3,26.3,37.1,68.6,logprob,yes,maintainers,2026-10-23,,1.0,
+model,MOSS-Music,This paper,,open,music,9.1,GRPO (LoRA),46.0,93.2,95.2,66.4,75.2,71.1,23.4,34.4,33.2,logprob,yes,maintainers,2026-10-23,,1.0,
+model,MusiLingo,This paper,,open,music,7.1,GRPO (LoRA),54.0,50.8,56.8,49.6,52.8,49.5,53.0,48.1,100.0,logprob,yes,maintainers,2026-10-23,,1.0,Answers A on every item. Trained and scored in bf16; zero-shot in bf16 it gets Clean 51.3 and AccFS 51.6
