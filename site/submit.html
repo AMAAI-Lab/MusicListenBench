@@ -33,13 +33,13 @@
         <pre><code>python -m musiclistenbench.scoring.score_submission submission.jsonl</code></pre></li>
       <li><h3>Add one row per model and method</h3>
         <p>Append to <code>leaderboard.csv</code>. Scores are percent accuracy with one decimal. Set <code>verified</code> to <code>no</code>; maintainers change it after reproducing your numbers.</p>
-        <pre><code>type,model,organization,model_url,access,params_b,method,melody,rhythm,timbre,harmony,overall,acc_fs,miss_rate,false_flip_rate,a_rate,readout,verified,submitted_by,date,source_url,benchmark_version,notes
-model,My-Audio-LLM,My Lab,https://huggingface.co/...,open,7,zero-shot,60.0,55.2,66.8,52.0,58.5,57.6,40.1,44.7,52.0,logprob,no,@your-github,2026-10-01,https://arxiv.org/...,1.0,</code></pre>
-        <p>The first four score columns are clean accuracy per task, <code>overall</code> is clean accuracy on all 1,000 clean items, and <code>acc_fs</code>, <code>miss_rate</code>, <code>false_flip_rate</code> and <code>a_rate</code> are FLIP/STAY accuracy, miss rate, false-flip rate and the share of ‘A’ answers on the clean items. <code>method</code> is <code>zero-shot</code>, or how you used the training split (for example <code>GRPO (LoRA)</code>); <code>readout</code> is <code>logprob</code> or <code>generated</code>.</p></li>
+        <pre><code>type,model,organization,model_url,access,domain,params_b,method,melody,rhythm,timbre,harmony,overall,acc_fs,miss_rate,false_flip_rate,a_rate,readout,verified,submitted_by,date,source_url,benchmark_version,notes
+model,My-Audio-LLM,My Lab,https://huggingface.co/...,open,general,7,zero-shot,60.0,55.2,66.8,52.0,58.5,57.6,40.1,44.7,52.0,logprob,no,@your-github,2026-10-01,https://arxiv.org/...,1.0,</code></pre>
+        <p>The first four score columns are clean accuracy per task, <code>overall</code> is clean accuracy on all 1,000 clean items, and <code>acc_fs</code>, <code>miss_rate</code>, <code>false_flip_rate</code> and <code>a_rate</code> are FLIP/STAY accuracy, miss rate, false-flip rate and the share of ‘A’ answers on the clean items. <code>domain</code> is <code>music</code> for a model built specifically for music understanding, which is listed in its own section, and <code>general</code> for any other audio LLM. <code>method</code> is <code>zero-shot</code>, or how you used the training split (for example <code>GRPO (LoRA)</code>); <code>readout</code> is <code>logprob</code> or <code>generated</code>.</p></li>
       <li><h3>Open a pull request</h3>
         <p>A check validates the file automatically and explains any problem. Fix it and push again; the check reruns.</p></li>
       <li><h3>Maintainers review and merge</h3>
-        <p><span class="todo">TODO: what we check before merging, and how long review usually takes.</span></p></li>
+        <p>Maintainers re-score your submission file with the same script. A row stays marked self-reported until they reproduce the numbers, and then <code>verified</code> is changed to <code>yes</code>.</p></li>
     </ol>
   </section>
 </main>
