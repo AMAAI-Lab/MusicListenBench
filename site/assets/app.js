@@ -8,8 +8,7 @@
   document.querySelectorAll("[data-link]").forEach(a => {
     const url = C[a.dataset.link];
     if (url) a.href = url;
-    else if (C.anonymous) a.hidden = true; // reviewers never see placeholders
-    else { a.removeAttribute("href"); a.classList.add("todo"); a.title = "TODO: set " + a.dataset.link + " in assets/config.js"; }
+    else a.hidden = true; // links without a URL are not shown
   });
   const foot = document.getElementById("foot");
   if (foot) {
@@ -71,6 +70,7 @@
     const COLS = 12;
     const fmt = v => Number.isNaN(v) ? "—" : v.toFixed(1);
     const isTrained = r => !/^zero-shot$/i.test(r.method);
+    const isMusic = r => r.domain === "music";
 
     function render() {
       const q = state.q.toLowerCase();
@@ -87,10 +87,15 @@
         }
         return String(av).localeCompare(String(bv)) * state.dir;
       });
-      // Zero-shot models and models trained on the released training split are listed separately.
+      // Zero-shot models and models trained on the released training split are listed separately,
+      // and models built for music (domain "music") get their own two groups.
+      const general = rows.filter(r => r.type === "model" && !isMusic(r));
+      const music = rows.filter(r => r.type === "model" && isMusic(r));
       const groups = [
-        ["Zero-shot models", rows.filter(r => r.type === "model" && !isTrained(r))],
-        ["Models trained on the released training split", rows.filter(r => r.type === "model" && isTrained(r))],
+        ["Zero-shot models", general.filter(r => !isTrained(r))],
+        ["Models trained on the released training split", general.filter(isTrained)],
+        ["Music-specific models: zero-shot", music.filter(r => !isTrained(r))],
+        ["Music-specific models: trained on the released training split", music.filter(isTrained)],
         ["References", rows.filter(r => r.type === "baseline")],
       ].filter(g => g[1].length);
 

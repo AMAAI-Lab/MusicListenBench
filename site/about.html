@@ -56,7 +56,7 @@
   <section class="block">
     <h2>Evaluation</h2>
     <div class="prose">
-      <p>Each question ends with a fixed instruction that says which letter means which answer. Open models are scored by comparing the probabilities of the tokens ‘A’ and ‘B’; API models are scored by the letter they generate. Missing or invalid answers count as wrong. Zero-shot models and models that used the training split are listed separately.</p>
+      <p>Each question ends with a fixed instruction that says which letter means which answer. Open models are scored by comparing the probabilities of the tokens ‘A’ and ‘B’; API models are scored by the letter they generate. Missing or invalid answers count as wrong. Zero-shot models and models that used the training split are listed separately, and so are models built specifically for music.</p>
       <h3>Findings from the paper</h3>
       <p>Without training, seven of eight open audio LLMs score within 4 points of the 50% floor on FLIP/STAY. The best commercial model, Gemini 2.5 Pro, reaches 74.2%, and human listeners reach 87.0%. Post-training Qwen2.5-Omni with GRPO on the training split raises its clean accuracy from 61.2% to 99.0%, but its FLIP/STAY accuracy only reaches 86.0%: it misses almost no change (1.9%) and still false-flips on 26.1% of STAY items.</p>
     </div>
@@ -64,13 +64,7 @@
 
   <section class="block" id="cite">
     <h2>Cite</h2>
-    <pre><code>@inproceedings{musiclistenbench2027,
-  title     = {MusicListenBench: Can Audio LLMs Hear the Difference Yet?},
-  author    = {TODO},
-  booktitle = {TODO},
-  year      = {TODO},
-  url       = {TODO}
-}</code></pre>
+    <p class="sub">Citation details will be added after the review period.</p>
   </section>
 </main>
 <footer class="site-foot"><div class="wrap" id="foot"></div></footer>

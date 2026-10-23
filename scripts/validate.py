@@ -3,12 +3,14 @@
 import csv, sys, re
 from datetime import date
 
-COLUMNS = ["type","model","organization","model_url","access","params_b","method",
+COLUMNS = ["type","model","organization","model_url","access","domain","params_b","method",
            "melody","rhythm","timbre","harmony","overall","acc_fs","miss_rate","false_flip_rate","a_rate",
            "readout","verified","submitted_by","date","source_url","benchmark_version","notes"]
 ASPECTS = ["melody","rhythm","timbre","harmony"]
 ENUMS = {"type": {"model","baseline"}, "verified": {"yes","no"}}
 MODEL_ACCESS = {"open","closed"}
+# "music" = built for music understanding (listed in its own section); "general" = any other audio LLM
+MODEL_DOMAIN = {"general","music"}
 MODEL_READOUT = {"logprob","generated"}
 KNOWN_VERSIONS = {"1.0"}
 # The test split has 250 clean items per task, so "overall" (clean accuracy on all 1,000 items)
@@ -60,6 +62,8 @@ def main(path):
             if row["type"] == "model":
                 if row["access"] not in MODEL_ACCESS:
                     err(i, "access must be 'open' or 'closed'")
+                if row["domain"] not in MODEL_DOMAIN:
+                    err(i, "domain must be 'general' (general-purpose audio model) or 'music' (built for music understanding)")
                 if row["readout"] not in MODEL_READOUT:
                     err(i, "readout must be 'logprob' (letter probabilities) or 'generated' (generated text)")
                 if not row["method"].strip():

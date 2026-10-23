@@ -25,6 +25,7 @@ See `site/submit.html` for the contributor instructions.
 |---|---|
 | type | `model`, or `baseline` for reference lines like chance (not ranked) |
 | access | `open` or `closed` weights |
+| domain | `music` for models built for music understanding (own section), `general` for other audio LLMs |
 | params_b | parameters in billions, empty if unknown |
 | method | e.g. `zero-shot`, `SFT`, `GRPO` |
 | melody…harmony | percent accuracy, 500 items each |
