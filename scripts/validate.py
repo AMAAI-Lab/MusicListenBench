@@ -3,12 +3,18 @@
 import csv, sys, re
 from datetime import date
 
-COLUMNS = ["type","model","organization","model_url","access","params_b","method",
+COLUMNS = ["type","model","organization","model_url","access","domain","params_b","method",
            "melody","rhythm","timbre","harmony","overall","acc_fs","miss_rate","false_flip_rate","a_rate",
-           "readout","verified","submitted_by","date","source_url","benchmark_version","notes"]
+           "real_melody","real_rhythm","real_timbre","real_harmony","real_overall","real_acc_fs","real_miss_rate",
+           "real_false_flip_rate","real_a_rate","readout","verified","submitted_by","date","source_url","benchmark_version","notes"]
 ASPECTS = ["melody","rhythm","timbre","harmony"]
+# Real-recordings test set (600 clean items, 150 per task; 1,200 FLIP/STAY items). The real_* columns may be
+# left empty, but if one is filled the score columns of that set must be complete and consistent.
+REAL = ["real_" + a for a in ASPECTS] + ["real_overall", "real_acc_fs", "real_miss_rate", "real_false_flip_rate"]
 ENUMS = {"type": {"model","baseline"}, "verified": {"yes","no"}}
 MODEL_ACCESS = {"open","closed"}
+# "music" = built for music understanding (listed in its own section); "general" = any other audio LLM
+MODEL_DOMAIN = {"general","music"}
 MODEL_READOUT = {"logprob","generated"}
 KNOWN_VERSIONS = {"1.0"}
 # The test split has 250 clean items per task, so "overall" (clean accuracy on all 1,000 items)
@@ -57,9 +63,21 @@ def main(path):
                 fs = 100 - (scores["miss_rate"] + scores["false_flip_rate"]) / 2
                 if abs(fs - scores["acc_fs"]) > TOLERANCE:
                     err(i, f"acc_fs ({scores['acc_fs']}) should equal 100 - (miss_rate + false_flip_rate) / 2 = {fs:.2f}")
+            if any(row[c] for c in REAL):
+                rs = {c: number(row, c, i) for c in REAL}
+                number(row, "real_a_rate", i, required=False)
+                if None not in rs.values():
+                    mean = sum(rs["real_" + a] for a in ASPECTS) / 4
+                    if abs(mean - rs["real_overall"]) > TOLERANCE:
+                        err(i, f"real_overall ({rs['real_overall']}) should equal the mean of the four real tasks ({mean:.2f})")
+                    fs = 100 - (rs["real_miss_rate"] + rs["real_false_flip_rate"]) / 2
+                    if abs(fs - rs["real_acc_fs"]) > TOLERANCE:
+                        err(i, f"real_acc_fs ({rs['real_acc_fs']}) should equal 100 - (real_miss_rate + real_false_flip_rate) / 2 = {fs:.2f}")
             if row["type"] == "model":
                 if row["access"] not in MODEL_ACCESS:
                     err(i, "access must be 'open' or 'closed'")
+                if row["domain"] not in MODEL_DOMAIN:
+                    err(i, "domain must be 'general' (general-purpose audio model) or 'music' (built for music understanding)")
                 if row["readout"] not in MODEL_READOUT:
                     err(i, "readout must be 'logprob' (letter probabilities) or 'generated' (generated text)")
                 if not row["method"].strip():

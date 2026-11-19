@@ -26,8 +26,12 @@ The training split has 10,000 items (2,500 per task). The test split has 1,000 c
   audio LLMs.
 * `musiclistenbench/training/`: GRPO training (LoRA and full fine-tuning).
 * `musiclistenbench/transfer/`, `musiclistenbench/captioning/`: leave-one-task-out test and the captioning check.
+* `musiclistenbench/other_sets/`: builds the real-recordings test set (GuitarSet, Medley-solos-DB, MUSDB18-HQ drums;
+  `build_real.py`, `fetch_musdb_drums.py`, `check_real.py`) and the Slakh2100 set (`scan_slakh.py`, `build_slakh.py`).
+  Run `python -m musiclistenbench.other_sets.<name>`; the source datasets are read from `REAL_DATA_DIR` and `SLAKH_DIR`.
 * `results/captioning/`: the 2,735 MusicCaps clip ids of the captioning check and the per-clip scores.
-* `scripts/`: runners, audio download, data check. `tests/`: tests for the scoring code.
+* `scripts/`: runners, audio download, data check, `train_slakh.sh` (GRPO on the Slakh2100 split) and
+  `eval_other_set.sh` (scores a model on the Slakh2100 or real-recordings set). `tests/`: tests for the scoring code.
 
 ## Quick start
 

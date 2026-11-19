@@ -49,14 +49,14 @@
   <section class="block">
     <h2>Data</h2>
     <div class="prose">
-      <p>The benchmark has 10,000 training items (2,500 per task) and 3,000 test items: 1,000 clean items (250 per task) and their 2,000 FLIP/STAY variants. All audio is generated from symbolic music and rendered with FluidSynth and freely available soundfonts, so every answer is known exactly and no human labelling is needed. Test items use pitch ranges, a soundfont and sound effects that never appear in training. The item files, the generator and the scoring script are in the <a data-link="githubRepo" href="#">code repository</a>.</p>
+      <p>The benchmark has 10,000 training items (2,500 per task) and 3,000 test items: 1,000 clean items (250 per task) and their 2,000 FLIP/STAY variants. All audio is generated from symbolic music and rendered with FluidSynth and freely available soundfonts, so every answer is known exactly and no human labelling is needed. A second test set, never used for training, builds the same items from real recordings (600 clean and 1,200 FLIP/STAY items from GuitarSet, Medley-solos-DB and MUSDB18-HQ drum stems); the leaderboard shows it under “Real recordings”. Test items use pitch ranges, a soundfont and sound effects that never appear in training. The item files, the generator and the scoring script are in the <a data-link="githubRepo" href="#">code repository</a>.</p>
     </div>
   </section>
 
   <section class="block">
     <h2>Evaluation</h2>
     <div class="prose">
-      <p>Each question ends with a fixed instruction that says which letter means which answer. Open models are scored by comparing the probabilities of the tokens ‘A’ and ‘B’; API models are scored by the letter they generate. Missing or invalid answers count as wrong. Zero-shot models and models that used the training split are listed separately.</p>
+      <p>Each question ends with a fixed instruction that says which letter means which answer. Open models are scored by comparing the probabilities of the tokens ‘A’ and ‘B’; API models are scored by the letter they generate. Missing or invalid answers count as wrong. Zero-shot models and models that used the training split are listed separately, and so are models built specifically for music.</p>
       <h3>Findings from the paper</h3>
       <p>Without training, seven of eight open audio LLMs score within 4 points of the 50% floor on FLIP/STAY. The best commercial model, Gemini 2.5 Pro, reaches 74.2%, and human listeners reach 87.0%. Post-training Qwen2.5-Omni with GRPO on the training split raises its clean accuracy from 61.2% to 99.0%, but its FLIP/STAY accuracy only reaches 86.0%: it misses almost no change (1.9%) and still false-flips on 26.1% of STAY items.</p>
     </div>
@@ -64,13 +64,7 @@
 
   <section class="block" id="cite">
     <h2>Cite</h2>
-    <pre><code>@inproceedings{musiclistenbench2027,
-  title     = {MusicListenBench: Can Audio LLMs Hear the Difference Yet?},
-  author    = {TODO},
-  booktitle = {TODO},
-  year      = {TODO},
-  url       = {TODO}
-}</code></pre>
+    <p class="sub">Citation details will be added after the review period.</p>
   </section>
 </main>
 <footer class="site-foot"><div class="wrap" id="foot"></div></footer>

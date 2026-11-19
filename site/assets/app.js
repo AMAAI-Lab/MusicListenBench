@@ -1,15 +1,16 @@
 (() => {
   const C = window.MLB_CONFIG;
   const ASPECTS = ["melody", "rhythm", "timbre", "harmony"];
-  const NUMERIC = ASPECTS.concat(["overall", "acc_fs", "miss_rate", "false_flip_rate", "a_rate"]);
+  const SCORES = ASPECTS.concat(["overall", "acc_fs", "miss_rate", "false_flip_rate", "a_rate"]);
+  // Two test sets: the rendered one (plain column names) and the real recordings (real_ prefix).
+  const NUMERIC = SCORES.concat(SCORES.map(k => "real_" + k));
   const LOWER_IS_BETTER = ["miss_rate", "false_flip_rate"];
 
   /* ---------- Config-driven links and footer ---------- */
   document.querySelectorAll("[data-link]").forEach(a => {
     const url = C[a.dataset.link];
     if (url) a.href = url;
-    else if (C.anonymous) a.hidden = true; // reviewers never see placeholders
-    else { a.removeAttribute("href"); a.classList.add("todo"); a.title = "TODO: set " + a.dataset.link + " in assets/config.js"; }
+    else a.hidden = true; // links without a URL are not shown
   });
   const foot = document.getElementById("foot");
   if (foot) {
@@ -46,7 +47,7 @@
   /* ---------- Leaderboard ---------- */
   const board = document.getElementById("board");
   if (board) {
-    const state = { rows: [], sort: "acc_fs", dir: -1, q: "", access: "all", verifiedOnly: false, chance: 50 };
+    const state = { rows: [], set: "rendered", sort: "acc_fs", dir: -1, q: "", access: "all", verifiedOnly: false, chance: 50 };
     const tbody = board.querySelector("tbody");
 
     fetch(C.csvPath, { cache: "no-cache" })
@@ -70,7 +71,10 @@
 
     const COLS = 12;
     const fmt = v => Number.isNaN(v) ? "—" : v.toFixed(1);
+    // Column name of a score in the test set that is currently shown.
+    const col = k => state.set === "real" && SCORES.includes(k) ? "real_" + k : k;
     const isTrained = r => !/^zero-shot$/i.test(r.method);
+    const isMusic = r => r.domain === "music";
 
     function render() {
       const q = state.q.toLowerCase();
@@ -78,7 +82,7 @@
         (r.type === "baseline" || state.access === "all" || r.access === state.access) &&
         (r.type === "baseline" || !state.verifiedOnly || r.verified === "yes") &&
         (!q || `${r.model} ${r.organization} ${r.method}`.toLowerCase().includes(q)));
-      const key = state.sort;
+      const key = col(state.sort);
       rows.sort((a, b) => {
         const av = a[key], bv = b[key];
         if (typeof av === "number") {
@@ -87,10 +91,15 @@
         }
         return String(av).localeCompare(String(bv)) * state.dir;
       });
-      // Zero-shot models and models trained on the released training split are listed separately.
+      // Zero-shot models and models trained on the released training split are listed separately,
+      // and models built for music (domain "music") get their own two groups.
+      const general = rows.filter(r => r.type === "model" && !isMusic(r));
+      const music = rows.filter(r => r.type === "model" && isMusic(r));
       const groups = [
-        ["Zero-shot models", rows.filter(r => r.type === "model" && !isTrained(r))],
-        ["Models trained on the released training split", rows.filter(r => r.type === "model" && isTrained(r))],
+        ["Zero-shot models", general.filter(r => !isTrained(r))],
+        ["Models trained on the released training split", general.filter(isTrained)],
+        ["Music-specific models: zero-shot", music.filter(r => !isTrained(r))],
+        ["Music-specific models: trained on the released training split", music.filter(isTrained)],
         ["References", rows.filter(r => r.type === "baseline")],
       ].filter(g => g[1].length);
 
@@ -99,13 +108,14 @@
       // Rank inside each group by FLIP/STAY accuracy.
       const rankOf = new Map();
       groups.filter(g => g[1][0].type === "model").forEach(([, g]) =>
-        [...g].sort((a, b) => b.acc_fs - a.acc_fs).forEach((r, i) => rankOf.set(r, i + 1)));
+        g.filter(r => !Number.isNaN(r[col("acc_fs")])).sort((a, b) => b[col("acc_fs")] - a[col("acc_fs")])
+          .forEach((r, i) => rankOf.set(r, i + 1)));
 
       const rowHtml = r => {
         const isBase = r.type === "baseline";
         const bar = (k, cls = "num") => `<td class="${cls}" style="--c:${ASPECTS.includes(k) ? `var(--${k})` : "var(--ink)"};--chance:${state.chance}%">
-            <div class="score"><span>${fmt(r[k])}</span><div class="bar"><i style="width:${r[k] || 0}%"></i></div></div></td>`;
-        const plain = k => `<td class="num plain"><span>${fmt(r[k])}</span></td>`;
+            <div class="score"><span>${fmt(r[col(k)])}</span><div class="bar"><i style="width:${r[col(k)] || 0}%"></i></div></div></td>`;
+        const plain = k => `<td class="num plain"><span>${fmt(r[col(k)])}</span></td>`;
         const name = r.model_url ? `<a href="${esc(r.model_url)}">${esc(r.model)}</a>` : esc(r.model);
         const tags = isBase ? "" :
           `<span class="tag">${esc(r.access)}</span>` + (r.verified === "yes" ? "" : `<span class="tag self" title="Self-reported, not yet reproduced by maintainers">self-reported</span>`);
@@ -113,7 +123,7 @@
         const src = r.source_url ? ` <a href="${esc(r.source_url)}">source</a>` : "";
         const note = isBase ? "" : (r.notes ? `<small class="note">${esc(r.notes)}</small>` : "");
         return `<tr class="${isBase ? "baseline" : ""}">
-          <td class="rank">${isBase ? "" : rankOf.get(r)}</td>
+          <td class="rank">${isBase ? "" : (rankOf.get(r) || "")}</td>
           <td class="model"${isBase && r.notes ? ` title="${esc(r.notes)}"` : ""}><b>${name}</b><small>${meta}${src}</small>${note}${tags ? `<div class="tags">${tags}</div>` : ""}</td>
           <td class="method">${esc(r.method)}</td>
           ${ASPECTS.map(k => bar(k)).join("")}
@@ -139,6 +149,12 @@
     document.querySelectorAll("#access button").forEach(b => b.addEventListener("click", () => {
       document.querySelectorAll("#access button").forEach(x => x.setAttribute("aria-pressed", x === b));
       state.access = b.dataset.access; render();
+    }));
+    document.querySelectorAll("#testset button").forEach(b => b.addEventListener("click", () => {
+      document.querySelectorAll("#testset button").forEach(x => x.setAttribute("aria-pressed", x === b));
+      state.set = b.dataset.set;
+      document.querySelectorAll("[data-set-text]").forEach(el => { el.hidden = el.dataset.setText !== state.set; });
+      render();
     }));
     document.getElementById("verified")?.addEventListener("change", e => { state.verifiedOnly = e.target.checked; render(); });
   }
