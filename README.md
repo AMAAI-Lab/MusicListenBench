@@ -1,7 +1,6 @@
 # MusicListenBench
 
-Code and item files for the paper *MusicListenBench: Can Audio LLMs Hear the Difference Yet?* (under
-double-blind review; authors anonymous). The leaderboard is at https://musiclistenbench-review.pages.dev .
+Code and item files for *MusicListenBench: Can Audio LLMs Hear the Difference Yet?*.
 
 Each test item is one audio file (clip A, one second of silence, clip B) and one question about the pair:
 same melody, same chord, same instrument, or which clip is faster. Every item has two variants. In the FLIP
