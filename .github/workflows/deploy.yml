@@ -1,12 +1,16 @@
-# On every push to main: validate the CSV, then build and publish
+# On every push to main: validate the CSV, then build and publish the public site.
 #   _site/  -> GitHub Pages + Hugging Face Space (public)
-#   _anon/  -> Cloudflare Pages (anonymous reviewer copy)
-# Each target is skipped if its secret is missing.
+# Cloudflare publishes the anonymous reviewer copy only on an explicit manual run.
 name: Deploy leaderboard
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      deploy_reviewer:
+        description: Also publish the anonymous reviewer copy to Cloudflare Pages
+        type: boolean
+        default: false
 permissions:
   contents: read
   pages: write
@@ -47,11 +51,11 @@ jobs:
           "
 
       - name: Create Cloudflare Pages project (first run only)
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_reviewer && env.CLOUDFLARE_API_TOKEN != '' }}
         continue-on-error: true   # fails harmlessly once the project exists
         run: npx --yes wrangler@3 pages project create "$CF_PROJECT" --production-branch=main
       - name: Deploy anonymous copy to Cloudflare Pages
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_reviewer && env.CLOUDFLARE_API_TOKEN != '' }}
         run: npx --yes wrangler@3 pages deploy _anon --project-name="$CF_PROJECT" --branch=main --commit-message="update"
 
   deploy:

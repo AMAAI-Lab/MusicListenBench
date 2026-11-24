@@ -16,10 +16,10 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE, CSV = ROOT / "site", ROOT / "leaderboard.csv"
 
 # Anything that could identify the authors. Case-insensitive substring match.
-# TODO: add every author's surname, and any other giveaway (grant names, emails).
 LEAK_TERMS = [
-    "AMAAI", "amaai-lab", "SUTD", "Singapore University",
-    "roy", "heremmans", "mehrish",  # style reference, not needed in either build
+    "AMAAI", "SUTD", "Singapore University", "University of Venice", "unive.it",
+    "abhinaba", "ambuj", "dorien", "roy", "herremans", "heremmans", "mehrish",
+    "2611.29375",
 ]
 
 ANON_BRAND = "Anonymous submission"

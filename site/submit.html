@@ -26,18 +26,22 @@
 <main id="main" class="wrap">
   <section class="block" style="border-top:0">
     <h2>Submit a result</h2>
-    <p class="sub">The leaderboard is a single CSV file on GitHub. You score your model with the official script, add one row with a pull request, and this page and the Hugging Face Space update when it merges.</p>
+    <p class="sub">Score your model and open a pull request in the <a href="https://github.com/AMAAI-Lab/MusicListenBench">GitHub leaderboard repository</a>. Merged results appear on the leaderboard and the Hugging Face Space.</p>
     <ol class="steps">
       <li><h3>Run the official evaluation</h3>
-        <p>Answer the 3,000 test items of the v1.0 test split (1,000 clean, 1,000 FLIP and 1,000 STAY items) and write one JSON Lines file: a first line with the model name and version, how the answer was read (letter probabilities or generated text), whether the model used the training split, the date and an optional link to code, then one record per item with the item ID and the letter ‘A’ or ‘B’. Missing or invalid answers count as wrong. Training on test items is not allowed. The format is described at the top of <code>musiclistenbench/scoring/score_submission.py</code> in the <a data-link="githubRepo" href="#">GitHub repository</a>, and <code>data/example_submission.jsonl</code> is an example. Score the file with the official script, run from the repository root:</p>
-        <pre><code>python -m musiclistenbench.scoring.score_submission submission.jsonl</code></pre></li>
+        <p>Get the <a data-link="datasetUrl" href="#">Hugging Face dataset</a> and use the <a href="https://github.com/AMAAI-Lab/MusicListenBench/tree/release/musiclistenbench/eval">model evaluation code on GitHub</a> to answer the 3,000 rendered test items (1,000 clean, 1,000 FLIP and 1,000 STAY). Use only the training split for benchmark training.</p>
+        <p>Write one JSON Lines file with model metadata on the first line and one item ID and answer (‘A’ or ‘B’) per line after that. See the <a href="https://github.com/AMAAI-Lab/MusicListenBench/blob/release/data/example_submission.jsonl">example submission</a> and the <a href="https://github.com/AMAAI-Lab/MusicListenBench/blob/release/musiclistenbench/scoring/score_submission.py">scoring script</a> for the format. Missing or invalid answers count as wrong.</p>
+        <p>Run the scorer from a checkout of the <code>release</code> branch. Replace <code>/path/to/submission.jsonl</code> with your file path.</p>
+        <pre><code>git clone --depth 1 --branch release https://github.com/AMAAI-Lab/MusicListenBench.git MusicListenBench-eval
+cd MusicListenBench-eval
+python -m musiclistenbench.scoring.score_submission /path/to/submission.jsonl</code></pre></li>
       <li><h3>Add one row per model and method</h3>
-        <p>Append to <code>leaderboard.csv</code>. Scores are percent accuracy with one decimal. Set <code>verified</code> to <code>no</code>; maintainers change it after reproducing your numbers.</p>
-        <pre><code>type,model,organization,model_url,access,domain,params_b,method,melody,rhythm,timbre,harmony,overall,acc_fs,miss_rate,false_flip_rate,a_rate,readout,verified,submitted_by,date,source_url,benchmark_version,notes
-model,My-Audio-LLM,My Lab,https://huggingface.co/...,open,general,7,zero-shot,60.0,55.2,66.8,52.0,58.5,57.6,40.1,44.7,52.0,logprob,no,@your-github,2026-10-01,https://arxiv.org/...,1.0,</code></pre>
+        <p>Append a row to <a href="https://github.com/AMAAI-Lab/MusicListenBench/blob/main/leaderboard.csv"><code>leaderboard.csv</code></a> in your fork of the leaderboard repository. Report percentages to one decimal place and set <code>verified</code> to <code>no</code> for maintainer review.</p>
+        <pre><code>type,model,organization,model_url,access,domain,params_b,method,melody,rhythm,timbre,harmony,overall,acc_fs,miss_rate,false_flip_rate,a_rate,real_melody,real_rhythm,real_timbre,real_harmony,real_overall,real_acc_fs,real_miss_rate,real_false_flip_rate,real_a_rate,readout,verified,submitted_by,date,source_url,benchmark_version,notes
+model,My-Audio-LLM,My Lab,https://example.org/my-model,open,general,7,zero-shot,60.0,55.2,66.8,52.0,58.5,57.6,40.1,44.7,52.0,,,,,,,,,,logprob,no,@your-github,2026-10-01,https://example.org/my-model/evaluation,1.0,</code></pre>
         <p>The first four score columns are clean accuracy per task, <code>overall</code> is clean accuracy on all 1,000 clean items, and <code>acc_fs</code>, <code>miss_rate</code>, <code>false_flip_rate</code> and <code>a_rate</code> are FLIP/STAY accuracy, miss rate, false-flip rate and the share of ‘A’ answers on the clean items. The same nine columns with a <code>real_</code> prefix hold the scores on the real-recordings test set (600 clean and 1,200 FLIP/STAY items); leave them empty if you did not run it. <code>domain</code> is <code>music</code> for a model built specifically for music understanding, which is listed in its own section, and <code>general</code> for any other audio LLM. <code>method</code> is <code>zero-shot</code>, or how you used the training split (for example <code>GRPO (LoRA)</code>); <code>readout</code> is <code>logprob</code> or <code>generated</code>.</p></li>
       <li><h3>Open a pull request</h3>
-        <p>A check validates the file automatically and explains any problem. Fix it and push again; the check reruns.</p></li>
+        <p>Run <code>python scripts/validate.py leaderboard.csv</code> from your leaderboard checkout before opening the pull request. GitHub runs the same check on the pull request.</p></li>
       <li><h3>Maintainers review and merge</h3>
         <p>Maintainers re-score your submission file with the same script. A row stays marked self-reported until they reproduce the numbers, and then <code>verified</code> is changed to <code>yes</code>.</p></li>
     </ol>
