@@ -1,8 +1,9 @@
 # MusicListenBench leaderboard
 
-Can audio LLMs hear the difference yet? This repo holds the leaderboard for
-MusicListenBench. The dataset lives at
-https://huggingface.co/datasets/amaai-lab/MusicListenBench
+MusicListenBench tests how well audio language models hear differences in
+melody, harmony, timbre, and rhythm. This repository maintains the public leaderboard.
+
+[Paper](https://arxiv.org/abs/2611.29375) · [Dataset](https://huggingface.co/datasets/amaai-lab/MusicListenBench) · [Evaluation code](https://github.com/AMAAI-Lab/MusicListenBench/tree/release) · [Leaderboard](https://amaai-lab.github.io/MusicListenBench/) · [Hugging Face Space](https://huggingface.co/spaces/amaai-lab/MusicListenBench-leaderboard)
 
 ## How it works
 
@@ -13,7 +14,8 @@ the CSV to:
 - GitHub Pages
 - a static Hugging Face Space (`space/README.md` holds the Space config)
 
-Nobody edits the Space directly.
+Update the Space card in [space/README.md](space/README.md). GitHub Actions
+publishes it with the leaderboard.
 
 ## Adding a result
 
@@ -28,8 +30,8 @@ See `site/submit.html` for the contributor instructions.
 | domain | `music` for models built for music understanding (own section), `general` for other audio LLMs |
 | params_b | parameters in billions, empty if unknown |
 | method | e.g. `zero-shot`, `SFT`, `GRPO` |
-| melody…harmony | percent accuracy, 500 items each |
-| overall | mean of the four aspects (TODO: confirm) |
+| melody…harmony | clean accuracy by task |
+| overall | mean clean accuracy across the four tasks |
 | verified | `yes` once maintainers reproduce the result |
 | benchmark_version | `1.0` |
 
@@ -38,8 +40,8 @@ See `site/submit.html` for the contributor instructions.
 `scripts/build.py` also builds `_anon/`: the same site with the lab name,
 GitHub, dataset, paper and contact links removed, the Submit page and BibTeX
 replaced by a note, identifying CSV fields blanked, and search engines blocked.
-It is deployed to Cloudflare Pages at `https://<CF_PROJECT>.pages.dev`, whose
-URL does not reveal the account owner.
+To publish the reviewer copy, run the deployment workflow manually with
+`deploy_reviewer` enabled.
 
 The build **fails** if any term in `LEAK_TERMS` (in `scripts/build.py`) appears
 anywhere in `_anon/`. Add all author surnames there before submitting.
@@ -65,4 +67,20 @@ After decisions: delete the Cloudflare project and remove its secrets.
 
 ```
 python scripts/build.py && cd _site && python -m http.server
+```
+
+## Citation
+
+If you use MusicListenBench, please cite [the paper](https://arxiv.org/abs/2611.29375).
+
+```bibtex
+@misc{roy2026musiclistenbench,
+  title = {{MusicListenBench}: Can Audio {LLM}s Hear the Difference Yet?},
+  author = {Roy, Abhinaba and Mehrish, Ambuj and Herremans, Dorien},
+  year = {2026},
+  eprint = {2611.29375},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.SD},
+  url = {https://arxiv.org/abs/2611.29375}
+}
 ```
